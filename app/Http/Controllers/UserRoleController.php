@@ -82,7 +82,7 @@ class UserRoleController extends Controller
     }
 
     // Show edit form
-    public function edit(UserRole $role)
+    public function edit(int $roleId)
     {
         $routes = collect(Route::getRoutes())
             ->map(function ($r) {
@@ -110,7 +110,7 @@ class UserRoleController extends Controller
             ->values();
 
         return Inertia::render('roles/upsert', [
-            'role' => $role->with('company')->first(),
+            'role' => UserRole::with('company')->find($roleId),
             'allRoutes' => $routes,
         ]);
     }

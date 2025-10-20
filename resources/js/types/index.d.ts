@@ -21,6 +21,7 @@ export interface NavItem {
     icon?: LucideIcon | null;
     isActive?: boolean;
     allow?: string[]; // optional role whitelist for client-side guards
+    permission?: string | string[];
 }
 
 export interface SharedData {

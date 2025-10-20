@@ -31,7 +31,7 @@ export default function Index() {
             accessorKey: "permissions",
             header: "Permissions",
             cell: ({ row }) => {
-                const value = row.getValue("permissions") as unknown;
+                const value = row.original.permissions;
                 if (Array.isArray(value)) {
                     return value.length ? value.join(", ") : "—";
                 }
