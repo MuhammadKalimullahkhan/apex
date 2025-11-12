@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::create('projects', function (Blueprint $table) {
+        Schema::create('projects', function (Blueprint $table) {
             $table->id('project_id');
             $table->string('name');
             $table->text('description')->nullable();
@@ -21,8 +21,7 @@ return new class extends Migration
             $table->unsignedBigInteger('project_manager_id')->nullable();
             $table->unsignedBigInteger('client_id')->nullable();
             $table->unsignedBigInteger('company_id')->nullable();
-            $table->unsignedBigInteger('entry_user_id')->nullable();
-            
+
             $table->timestamps();
 
             $table->foreign('status_id')->references('status_id')->on('statuses');

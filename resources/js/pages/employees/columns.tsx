@@ -29,6 +29,18 @@ export const columns: ColumnDef<Employee>[] = [
     header: "Email",
   },
   {
+    accessorKey: "role.role_name",
+    header: "Role",
+    cell: ({ row }) => {
+      const value = row.original.role?.role_name;
+      return (
+        <Badge variant={"secondary"}>
+          {value}
+        </Badge>
+      )
+    },
+  },
+  {
     accessorKey: "email_verified_at",
     header: "Email Verification",
     cell: ({ row }) => {

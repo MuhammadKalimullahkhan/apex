@@ -32,13 +32,16 @@ export default function Index() {
             header: "Permissions",
             cell: ({ row }) => {
                 const value = row.original.permissions;
-                if (Array.isArray(value)) {
-                    return value.length ? value.join(", ") : "—";
-                }
-                if (value && typeof value === "object") {
-                    try { return JSON.stringify(value); } catch { return "—"; }
-                }
-                return (value as string) ?? "—";
+                const roleName = row.original.role_name;
+
+                return <span title={value as string}>{roleName} - {JSON.parse(value).length}</span>;
+                // if (Array.isArray(value)) {
+                //     return value.length;
+                // }
+                // if (value && typeof value === "object") {
+                //     try { return JSON.stringify(value); } catch { return "—"; }
+                // }
+                // return (value as string) ?? "—";
             },
         },
         {

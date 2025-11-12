@@ -18,8 +18,7 @@ return new class extends Migration
             $table->string('location')->nullable();
             $table->string('business_email')->unique();
             $table->string('website')->nullable();
-            $table->unsignedBigInteger('entry_user_id')->nullable();
-            
+
             $table->timestamps();
         });
     }

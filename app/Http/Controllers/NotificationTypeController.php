@@ -13,7 +13,7 @@ class NotificationTypeController extends Controller
      */
     public function index()
     {
-        $notificationTypes = NotificationType::with(['company', 'entryUser'])
+        $notificationTypes = NotificationType::with(['company'])
             ->latest()
             ->paginate(10);
 
@@ -21,7 +21,6 @@ class NotificationTypeController extends Controller
             'notification_types' => $notificationTypes,
         ]);
     }
-
 
     /**
      * Show the form for creating a new notification type.
@@ -37,12 +36,11 @@ class NotificationTypeController extends Controller
     public function store(Request $request)
     {
         $validated = $request->validate([
-            'type_name' => 'required|string|max:255'
+            'type_name' => 'required|string|max:255',
         ]);
 
         NotificationType::create($validated + [
             'company_id' => auth()->user()->company_id,
-            'entry_user_id' => auth()->user()->id,
         ]);
 
         return redirect()->route('notifications-types.index')
@@ -55,6 +53,7 @@ class NotificationTypeController extends Controller
     public function edit(int $id)
     {
         $notificationType = NotificationType::find($id);
+
         return Inertia::render('notification-types/upsert', [
             'notification_type' => $notificationType,
         ]);

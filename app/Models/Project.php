@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class Project extends Model
 {
+    use BelongsToCompany;
+
     protected $primaryKey = 'project_id';
 
     protected $fillable = [
@@ -17,7 +20,6 @@ class Project extends Model
         'project_manager_id',
         'client_id',
         'company_id',
-        'entry_user_id',
     ];
 
     public function company()
@@ -40,8 +42,23 @@ class Project extends Model
         return $this->belongsTo(User::class, 'project_manager_id');
     }
 
-    public function entryUser()
+    public function tasks()
     {
-        return $this->belongsTo(User::class, 'entry_user_id');
+        return $this->hasMany(Task::class, 'project_id', 'project_id');
+    }
+
+    public function expenses()
+    {
+        return $this->hasMany(Expense::class, 'project_id', 'project_id');
+    }
+
+    public function invoices()
+    {
+        return $this->hasMany(Invoice::class, 'project_id', 'project_id');
+    }
+
+    public function documents()
+    {
+        return $this->hasMany(Document::class, 'project_id', 'project_id');
     }
 }

@@ -13,8 +13,10 @@ class UserController extends Controller
      */
     public function index()
     {
-        $users = User::paginate(10);
-        return inertia("employees/index", compact("users"));
+        $company_id = auth()->user()->company_id;
+        $users = User::where('company_id', $company_id)->with('role')->paginate(10);
+
+        return inertia('employees/index', compact('users'));
     }
 
     /**
@@ -22,8 +24,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return inertia("employees/create", [
-            "user" => null,
+        return inertia('employees/create', [
+            'user' => null,
             'roles' => UserRole::get(),
 
         ]);
@@ -36,24 +38,23 @@ class UserController extends Controller
     {
         // Example validation
         $validated = $request->validate([
-            "name" => "required|string|max:255",
-            "email" => "required|string|email|unique:users,email",
-            "password" => "required|string|min:8|confirmed",
-
-            "role_id" => "required|exists:user_roles,role_id",
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users,email',
+            'password' => 'required|string|min:8|confirmed',
+            'role_id' => 'required|exists:user_roles,role_id',
+            'email_verified' => 'nullable|boolean',
         ]);
 
         $user = User::create([
-            "name" => $validated["name"],
-            "email" => $validated["email"],
-            "password" => bcrypt($validated["password"]),
-
-            "role_id" => $validated["role_id"],
-            "company_id" => auth()->user()->company_id,
-            "entry_user_id" => auth()->user()->id,
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'password' => bcrypt($validated['password']),
+            'role_id' => $validated['role_id'],
+            'company_id' => auth()->user()->company_id,
+            'email_verified_at' => $request->boolean('email_verified') ? now() : null,
         ]);
 
-        return redirect()->route("employees.index")->with("success", "User created successfully.");
+        return redirect()->route('employees.index')->with('success', 'User created successfully.');
     }
 
     /**
@@ -61,8 +62,12 @@ class UserController extends Controller
      */
     public function show(int $userId)
     {
-        $user = User::with('role')->find($userId);
-        return inertia("employees/show", compact("user"));
+        $user = User::where('company_id', auth()->user()->company_id)->with('role')->find($userId);
+        if ($user == null) {
+            return back();
+        }
+
+        return inertia('employees/show', compact('user'));
     }
 
     /**
@@ -70,15 +75,17 @@ class UserController extends Controller
      */
     public function edit(int $userId)
     {
-        $user = User::with('role')->find($userId);
+        $user = User::where('company_id', auth()->user()->company_id)->with('role')->find($userId);
+        if ($user == null) {
+            return back();
+        }
         $roles = UserRole::get();
 
-        return inertia("employees/update", [
-            "employee" => $user,
-            "roles" => $roles,
+        return inertia('employees/update', [
+            'employee' => $user,
+            'roles' => $roles,
         ]);
     }
-
 
     /**
      * Update the specified resource in storage.
@@ -86,38 +93,42 @@ class UserController extends Controller
     public function update(Request $request, int $userId)
     {
         $validated = $request->validate([
-            "name" => "required|string|max:255",
-            "email" => "required|string|email|unique:users,email," . $userId,
-            "password" => "nullable|string|min:8|confirmed",
-            "role_id" => "required|exists:user_roles,role_id",
-            "email_verified" => "nullable|boolean", // ✅ new
+            'name' => 'required|string|max:255',
+            'email' => 'required|string|email|unique:users,email,'.$userId,
+            'password' => 'nullable|string|min:8|confirmed',
+            'role_id' => 'required|exists:user_roles,role_id',
+            'email_verified' => 'nullable|boolean', // ✅ new
         ]);
 
-        $user = User::findOrFail($userId);
+        $user = User::where('company_id', auth()->user()->company_id)->find($userId);
 
         $user->update([
-            "name" => $validated["name"],
-            "email" => $validated["email"],
-            "role_id" => $validated["role_id"],
-            "email_verified_at" => $request->boolean("email_verified")
+            'name' => $validated['name'],
+            'email' => $validated['email'],
+            'role_id' => $validated['role_id'],
+            'email_verified_at' => $request->boolean('email_verified')
                 ? now()
                 : null,  // ✅ set or clear verification
         ]);
 
         return redirect()
-            ->route("employees.index")
-            ->with("success", "User updated successfully.");
+            ->route('employees.index')
+            ->with('success', 'User updated successfully.');
     }
-
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(int $userId)
     {
-        $user = User::find($userId);
+        $user = User::where('company_id', auth()->user()->company_id)->find($userId);
+        if ($user == null) {
+            return back();
+        }
+
         $user->notificationMsg()->delete();
         $user->delete();
-        return redirect()->route("employees.index")->with("success", "User deleted successfully.");
+
+        return redirect()->route('employees.index')->with('success', 'User deleted successfully.');
     }
 }

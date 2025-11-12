@@ -21,6 +21,11 @@ interface Task {
   company_id?: number
 }
 
+const priorities = [
+  {name: 'Low', label: "Low"},
+  {name: 'Medium', label: "Medium"},
+  {name: 'High', label: "High"},
+];
 export default function Upsert({
   task,
   projects,
@@ -82,7 +87,19 @@ export default function Upsert({
 
           <div>
             <Label htmlFor="priority">Priority</Label>
-            <Input id="priority" value={data.priority ?? ""} onChange={(e) => setData("priority", e.target.value)} />
+            <Select value={data.priority ?? ""} onValueChange={(e) => setData("priority", e)}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select Priority" />
+              </SelectTrigger>
+              <SelectContent>
+
+              {priorities.map((p) => (
+                <SelectItem key={p.name} value={String(p.name)}>
+                  {p.label}
+                </SelectItem>
+              ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div>

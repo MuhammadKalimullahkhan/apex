@@ -1,9 +1,10 @@
 import { ColumnDef } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { Link } from "@inertiajs/react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Link, useForm, router } from "@inertiajs/react"
 import { MoreHorizontal } from "lucide-react"
-import { useRoute } from "ziggy-js"
+import { route, useRoute } from "ziggy-js"
 import { routes } from "@/constants/routes"
 
 export interface Task {
@@ -36,7 +37,40 @@ export const columns: ColumnDef<Task>[] = [
   {
     accessorKey: "status.status_name",
     header: "Status",
-    cell: ({ row }) => row.original.status?.status_name ?? "—",
+    cell: ({ row, table }) => {
+      const currentStatus = row.original.status?.status_name ?? "—"
+      const statuses = table.options.meta?.statuses as any[] | undefined
+      
+      if (!statuses || statuses.length === 0) {
+        return <span>{currentStatus}</span>
+      }
+
+      const handleStatusChange = (newStatusId: string) => {
+        router.put(route(routes.tasks.update, row.original.task_id), {
+          status_id: parseInt(newStatusId),
+        }, {
+          preserveScroll: true,
+        })
+      }
+
+      return (
+        <Select
+          value={row.original.status?.status_id?.toString()}
+          onValueChange={handleStatusChange}
+        >
+          <SelectTrigger className="w-[140px]">
+            <SelectValue placeholder={currentStatus} />
+          </SelectTrigger>
+          <SelectContent>
+            {statuses.map((status) => (
+              <SelectItem key={status.status_id} value={status.status_id.toString()}>
+                {status.status_name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      )
+    },
   },
   {
     header: "Actions",
@@ -52,6 +86,9 @@ export const columns: ColumnDef<Task>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
+            <DropdownMenuItem asChild>
+              <Link href={route(routes.tasks.show, { id: row.original.task_id })}>View</Link>
+            </DropdownMenuItem>
             <DropdownMenuItem asChild>
               <Link href={route(routes.tasks.edit, { id: row.original.task_id })}>Edit</Link>
             </DropdownMenuItem>

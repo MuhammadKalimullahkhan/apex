@@ -32,7 +32,7 @@ class CompanyController extends Controller
             'website' => 'nullable|url',
         ]);
 
-        Company::create($validated + ['entry_user_id' => auth()->id()]);
+        Company::create($validated);
 
         return redirect()->route('companies.index')->with('success', 'Company created successfully.');
     }
@@ -50,7 +50,7 @@ class CompanyController extends Controller
             'company_name' => 'required|string|max:255',
             'registration_number' => 'nullable|string|max:255',
             'location' => 'nullable|string|max:255',
-            'business_email' => 'required|email|unique:companies,business_email,' . $company->company_id . ',company_id',
+            'business_email' => 'required|email|unique:companies,business_email,'.$company->company_id.',company_id',
             'website' => 'nullable|url',
         ]);
 

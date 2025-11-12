@@ -11,7 +11,6 @@ interface NotificationType {
   type_id?: number;
   type_name: string;
   company_id: number;
-  entry_user_id: number;
 }
 
 export default function Upsert({ notification_type }: { notification_type?: NotificationType }) {
@@ -21,7 +20,6 @@ export default function Upsert({ notification_type }: { notification_type?: Noti
   const { data, setData, post, put, processing, errors } = useForm({
     type_name: notification_type?.type_name ?? "",
     company_id: notification_type?.company_id ?? "",
-    entry_user_id: notification_type?.entry_user_id ?? "",
   });
 
   const handleSubmit = (e: React.FormEvent) => {

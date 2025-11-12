@@ -5,6 +5,7 @@ import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers';
 import { createRoot } from 'react-dom/client';
 import { initializeTheme } from './hooks/use-appearance';
 import { AuthProvider } from './contexts/auth-context';
+import { Toaster } from './components/ui/sonner';
 
 const appName = import.meta.env.VITE_APP_NAME || 'Laravel';
 
@@ -19,9 +20,12 @@ createInertiaApp({
         const root = createRoot(el);
 
         root.render(
-            <AuthProvider value={(props.initialPage.props as any).auth}>
-                <App {...props} />
-            </AuthProvider>
+            <>
+                <AuthProvider value={(props.initialPage.props as any).auth}>
+                    <App {...props} />
+                </AuthProvider>
+                <Toaster />
+            </>
         );
     },
     progress: {

@@ -2,11 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Client extends Model
 {
+    use BelongsToCompany;
+
     protected $primaryKey = 'client_id';
 
     protected $fillable = [
@@ -14,8 +17,7 @@ class Client extends Model
         'contact_number',
         'address',
         'company_id',
-        'entry_user_id',
-        
+
     ];
 
     public function projects()
@@ -31,10 +33,5 @@ class Client extends Model
     public function company(): BelongsTo
     {
         return $this->belongsTo(Company::class, 'company_id', 'company_id');
-    }
-
-    public function entryUser(): BelongsTo
-    {
-        return $this->belongsTo(User::class, 'entry_user_id', 'id');
     }
 }

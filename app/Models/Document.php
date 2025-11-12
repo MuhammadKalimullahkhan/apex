@@ -9,6 +9,7 @@ class Document extends Model
 {
     protected $fillable = [
         'project_id',
+        'task_id',
         'uploaded_by_id',
         'file_path',
         'file_name',
@@ -18,6 +19,11 @@ class Document extends Model
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class, 'project_id', 'project_id');
+    }
+
+    public function task(): BelongsTo
+    {
+        return $this->belongsTo(Task::class, 'task_id', 'task_id');
     }
 
     public function uploadedBy(): BelongsTo

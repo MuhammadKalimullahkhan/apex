@@ -17,13 +17,15 @@ interface DataTableProps<TData, TValue> {
     lastPage: number
     links: { url: string | null; label: string; active: boolean }[]
   }
+  meta?: Record<string, any>
 }
 
 export function DataTable<TData, TValue>({
   columns,
   data,
   searchKey,
-  pagination
+  pagination,
+  meta
 }: DataTableProps<TData, TValue>) {
   const [filter, setFilter] = React.useState("")
 
@@ -31,6 +33,7 @@ export function DataTable<TData, TValue>({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
+    meta,
   })
 
   return (

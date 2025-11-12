@@ -1,17 +1,21 @@
 <?php
 
+use App\Http\Middleware\EnsureCompanyEnabled;
 use App\Http\Middleware\HandleAppearance;
 use App\Http\Middleware\HandleInertiaRequests;
+use App\Http\Middleware\PermissionMiddleware;
+use App\Http\Middleware\RoleMiddleware;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Middleware\AddLinkHeadersForPreloadedAssets;
-use App\Http\Middleware\RoleMiddleware;
-use App\Http\Middleware\PermissionMiddleware;
 
 return Application::configure(basePath: dirname(__DIR__))
     ->withRouting(
-        web: __DIR__.'/../routes/web.php',
+        web: [
+            __DIR__.'/../routes/web.php',
+            __DIR__.'/../routes/admin.php',
+        ],
         commands: __DIR__.'/../routes/console.php',
         health: '/up',
     )
@@ -22,11 +26,13 @@ return Application::configure(basePath: dirname(__DIR__))
             HandleAppearance::class,
             HandleInertiaRequests::class,
             AddLinkHeadersForPreloadedAssets::class,
+            EnsureCompanyEnabled::class,
         ]);
 
         $middleware->alias([
             'role' => RoleMiddleware::class,
             'canp' => PermissionMiddleware::class,
+            'super_admin' => \App\Http\Middleware\EnsureSuperAdmin::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

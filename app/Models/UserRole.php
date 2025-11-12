@@ -1,18 +1,29 @@
 <?php
+
 namespace App\Models;
+
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
+
 class UserRole extends Model
 {
-    protected $primaryKey = 'role_id';
-    protected $fillable = ['role_name', 'permissions', 'company_id', 'entry_user_id',];
+    use BelongsToCompany;
 
-    protected $casts = [
-        'permissions' => 'array', // JSON field
-    ];
+    protected $primaryKey = 'role_id';
+
+    protected $fillable = ['role_name', 'permissions', 'company_id'];
+
+    protected function casts(): array
+    {
+        return [
+            'permissions' => 'array', // JSON field cast
+        ];
+    }
 
     // Belongs -> i am child
-    public function company(){
-        return $this->belongsTo(Company::class,'company_id');
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id');
     }
 
     // Has -> i am parent

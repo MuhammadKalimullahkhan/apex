@@ -13,7 +13,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 const Tasks = () => {
   const route = useRoute()
-  const { tasks } = usePage<{ tasks: Paginated<any> }>().props
+  const { tasks, statuses } = usePage<{ tasks: Paginated<any>, statuses: any[] }>().props
 
   return (
     <AppLayout breadcrumbs={breadcrumbs}>
@@ -35,6 +35,7 @@ const Tasks = () => {
             links: tasks.links,
           }}
           searchKey="name"
+          meta={{ statuses }}
         />
       </div>
     </AppLayout>

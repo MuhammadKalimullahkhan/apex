@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
                 'email_verified_at' => now(),
             ]
         );
+        $this->call(PermissionSeeder::class);
 
         // $this->call([CompanySeeder::class, UserRoleSeeder::class, StatusSeeder::class, NotificationTypeSeeder::class, ClientSeeder::class, ProjectSeeder::class, TaskSeeder::class, InvoiceSeeder::class, ExpenseSeeder::class, NotificationSeeder::class,]);
     }

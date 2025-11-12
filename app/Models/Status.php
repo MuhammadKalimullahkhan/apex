@@ -11,7 +11,6 @@ class Status extends Model
     protected $fillable = [
         'status_name',
         'company_id',
-        'entry_user_id',
-        
+
     ];
 }

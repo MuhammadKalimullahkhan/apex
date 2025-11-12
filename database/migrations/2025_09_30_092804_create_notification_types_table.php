@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id('type_id');
             $table->string('type_name');
             $table->unsignedBigInteger('company_id')->nullable();
-            $table->unsignedBigInteger('entry_user_id')->nullable();
-            
+
             $table->timestamps();
 
             $table->foreign('company_id')->references('company_id')->on('companies');

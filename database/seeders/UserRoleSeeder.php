@@ -55,6 +55,14 @@ class UserRoleSeeder extends Seeder
                     'expenses.submit',
                 ],
             ],
+            [
+                'role_name' => 'Finance Manager',
+                'permissions' => [
+                    'expenses.view',
+                    'invoices.view',
+                    'view.reports',
+                ],
+            ],
         ];
 
         foreach ($roles as $role) {

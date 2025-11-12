@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class Invoice extends Model
 {
+    use BelongsToCompany;
+
     protected $primaryKey = 'invoice_id';
 
     protected $fillable = [
@@ -15,7 +18,6 @@ class Invoice extends Model
         'status_id',
         'due_date',
         'company_id',
-        'entry_user_id',
     ];
 
     public function project()
@@ -36,10 +38,5 @@ class Invoice extends Model
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
-    }
-
-    public function entryUser()
-    {
-        return $this->belongsTo(User::class, 'entry_user_id');
     }
 }

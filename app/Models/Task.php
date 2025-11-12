@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\BelongsToCompany;
 use Illuminate\Database\Eloquent\Model;
 
 class Task extends Model
 {
+    use BelongsToCompany;
+
     protected $primaryKey = 'task_id';
 
     protected $fillable = [
@@ -17,7 +20,6 @@ class Task extends Model
         'priority',
         'due_date',
         'company_id',
-        'entry_user_id',
     ];
 
     public function project()
@@ -40,8 +42,8 @@ class Task extends Model
         return $this->belongsTo(Company::class, 'company_id');
     }
 
-    public function entryUser()
+    public function documents()
     {
-        return $this->belongsTo(User::class, 'entry_user_id');
+        return $this->hasMany(Document::class, 'task_id', 'task_id');
     }
 }

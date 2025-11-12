@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\Company;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Nette\Utils\Random;
 
@@ -22,10 +21,9 @@ class UserRoleFactory extends Factory
             'role_name' => $this->faker->jobTitle,
             'permissions' => json_encode([
                 'read',
-                'write'
+                'write',
             ]),
-            'company_id' => (int) Random::generate(1,'1-3'),
-            'entry_user_id' => null,
+            'company_id' => (int) Random::generate(1, '1-3'),
             'entry_date' => now(),
         ];
     }

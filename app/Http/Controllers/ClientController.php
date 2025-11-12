@@ -11,7 +11,7 @@ class ClientController extends Controller
 {
     public function index()
     {
-        $clients = Client::with(['company', 'entryUser'])
+        $clients = Client::with(['company'])
             ->paginate(10);
 
         return Inertia::render('clients/index', [
@@ -34,8 +34,6 @@ class ClientController extends Controller
             'address' => 'nullable|string',
             'company_id' => 'required|exists:companies,company_id',
         ]);
-
-        $data['entry_user_id'] = auth()->id();
 
         Client::create($data);
 

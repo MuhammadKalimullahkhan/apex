@@ -13,7 +13,7 @@ import {
 import { dashboard } from '@/routes';
 import { type NavItem } from '@/types';
 import { Link } from '@inertiajs/react';
-import { Bell, Building, Clipboard, LayoutGrid, Shield, ThermometerSnowflake, Ticket, Users, Users2 } from 'lucide-react';
+import { Bell, Building, Clipboard, DollarSign, LayoutGrid, Paperclip, Shield, ThermometerSnowflake, Ticket, TrendingUp, Users, Users2, BarChart3 } from 'lucide-react';
 import { useRoute } from 'ziggy-js';
 import AppLogo from './app-logo';
 import employees from '@/routes/employees';
@@ -27,6 +27,7 @@ import invoices from '@/routes/invoices';
 import notificationsTypes from '@/routes/notifications-types';
 import notifications from '@/routes/notifications';
 import { routes } from '@/constants/routes';
+import reports from '@/routes/reports';
 
 
 export function AppSidebar() {
@@ -37,71 +38,76 @@ export function AppSidebar() {
             title: 'Dashboard',
             href: dashboard(),
             icon: LayoutGrid,
-            allow: ['Admin','Project Manager','Developer','HR','Employee','Client'],
             permission: 'dashboard.index'
         },
         {
             title: 'Employees',
             href: employees.index(),
             icon: Users,
-            allow: ['Admin','HR'],
             permission: routes.employees.index
         },
         {
             title: 'Roles',
             href: roles.index(),
             icon: Shield,
-            allow: ['Admin', 'Project Manager'],
             permission: routes.roles.index
         },
         {
             title: 'Companies',
             href: companies.index(),
             icon: Building,
-            allow: ['Admin','HR'],
             permission: routes.companies.index
         },
         {
             title: 'Clients',
             href: clients.index(),
             icon: Users2,
-            allow: ['Admin','Project Manager'],
             permission: routes.clients.index
         },
         {
             title: 'Projects',
             href: projects.index(),
             icon: Clipboard,
-            allow: ['Admin','Project Manager'],
             permission: routes.projects.index
         },
         {
             title: 'Tasks',
             href: tasks.index(),
             icon: ThermometerSnowflake,
-            allow: ['Admin','Project Manager','Developer'],
             permission: routes.tasks.index
         },
         {
             title: 'Expenses',
             href: expenses.index(),
-            icon: ThermometerSnowflake,
-            allow: ['Admin','HR'],
+            icon: DollarSign,
             permission: routes.employees.index
         },
         {
             title: 'Invoices',
             href: invoices.index(),
-            icon: ThermometerSnowflake,
-            allow: ['Admin'],
+            icon: Paperclip,
             permission: routes.invoices.index
         },
         {
             title: 'Notification Types',
             href: notificationsTypes.index(),
             icon: Bell,
-            allow: ['Admin'],
             permission: routes.notificationsTypes.index
+        },
+    ];
+
+    const reportsNavItems: NavItem[] = [
+        {
+            title: 'Financial',
+            href: reports.financial.index(),
+            icon: BarChart3,
+            permission: 'reports.financial.index'
+        },
+        {
+            title: 'Projects',
+            href: reports.projects.index(),
+            icon: TrendingUp,
+            permission: 'reports.projects.index'
         },
     ];
 
@@ -130,7 +136,7 @@ export function AppSidebar() {
             </SidebarHeader>
 
             <SidebarContent>
-                <NavMain items={mainNavItems} />
+                <NavMain items={mainNavItems} reports={reportsNavItems} />
             </SidebarContent>
 
             <SidebarFooter>

@@ -21,8 +21,7 @@ return new class extends Migration
             $table->enum('priority', ['Low', 'Medium', 'High'])->default('Medium');
             $table->date('due_date')->nullable();
             $table->unsignedBigInteger('company_id')->nullable();
-            $table->unsignedBigInteger('entry_user_id')->nullable();
-            
+
             $table->timestamps();
 
             $table->foreign('project_id')->references('project_id')->on('projects');

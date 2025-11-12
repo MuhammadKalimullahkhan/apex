@@ -23,9 +23,8 @@ class CompanyFactory extends Factory
                 'location' => $this->faker->address,
                 'business_email' => $this->faker->unique()->companyEmail,
                 'website' => $this->faker->url,
-                'entry_user_id' => null,
                 'entry_date' => now(),
-            ]
+            ],
         ];
     }
 }

@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Company;
 use App\Models\Expense;
 use App\Models\Project;
-use App\Models\Company;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -23,7 +23,7 @@ class ExpenseController extends Controller
     public function create()
     {
         return Inertia::render('expenses/upsert', [
-            'projects'  => Project::all(['project_id', 'name']),
+            'projects' => Project::all(['project_id', 'name']),
             'companies' => Company::all(['company_id', 'company_name']),
         ]);
     }
@@ -32,13 +32,11 @@ class ExpenseController extends Controller
     {
         $data = $request->validate([
             'project_id' => 'required|exists:projects,project_id',
-            'name'       => 'required|string|max:255',
-            'amount'     => 'required|numeric',
-            'date'       => 'required|date',
+            'name' => 'required|string|max:255',
+            'amount' => 'required|numeric',
+            'date' => 'required|date',
             'company_id' => 'required|exists:companies,company_id',
         ]);
-
-        $data['entry_user_id'] = auth()->id();
 
         Expense::create($data);
 
@@ -48,8 +46,8 @@ class ExpenseController extends Controller
     public function edit(Expense $expense)
     {
         return Inertia::render('expenses/upsert', [
-            'expense'   => $expense->load(['project', 'company']),
-            'projects'  => Project::all(['project_id', 'name']),
+            'expense' => $expense->load(['project', 'company']),
+            'projects' => Project::all(['project_id', 'name']),
             'companies' => Company::all(['company_id', 'company_name']),
         ]);
     }
@@ -58,9 +56,9 @@ class ExpenseController extends Controller
     {
         $data = $request->validate([
             'project_id' => 'required|exists:projects,project_id',
-            'name'       => 'required|string|max:255',
-            'amount'     => 'required|numeric',
-            'date'       => 'required|date',
+            'name' => 'required|string|max:255',
+            'amount' => 'required|numeric',
+            'date' => 'required|date',
             'company_id' => 'required|exists:companies,company_id',
         ]);
 

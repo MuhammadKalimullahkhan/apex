@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Permission;
 use App\Models\UserRole;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
-use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Str;
 
 class UserRoleController extends Controller
 {
@@ -14,39 +13,16 @@ class UserRoleController extends Controller
     public function index()
     {
         $roles = UserRole::with('company')->paginate(10);
+
         return Inertia::render('roles/index', [
-            'roles' => $roles
+            'roles' => $roles,
         ]);
     }
 
     // Show create form
     public function create()
     {
-        $routes = collect(Route::getRoutes())
-            ->map(function ($r) {
-                return [
-                    'name' => $r->getName(),
-                    'controller' => $r->getAction('controller'),
-                ];
-            })
-            ->filter(fn ($r) => ! empty($r['name']))
-            // include only app controllers (exclude vendor), but also exclude auth/fortify
-            ->filter(function ($r) {
-                $controller = (string) ($r['controller'] ?? '');
-                $isAppController = Str::startsWith($controller, 'App\\');
-                $isAuth = Str::contains($controller, ['\\Auth\\', 'Fortify']);
-
-                $name = $r['name'];
-                $isAuthName = Str::is([
-                    'login', 'logout', 'register',
-                    'password.*', 'verification.*', 'two-factor.*', 'user.*',
-                    'sanctum.*',
-                ], $name);
-
-                return $isAppController && ! $isAuth && ! $isAuthName;
-            })
-            ->pluck('name')
-            ->values();
+        $routes = Permission::all()->pluck('name');
 
         return Inertia::render('roles/upsert', [
             'allRoutes' => $routes,
@@ -64,9 +40,8 @@ class UserRoleController extends Controller
 
         UserRole::create([
             'role_name' => $validated['role_name'],
-            'permissions' => !empty($validated['permissions']) ? json_encode($validated['permissions']) : null,
+            'permissions' => ! empty($validated['permissions']) ? json_encode($validated['permissions']) : null,
             'company_id' => auth()->user()->company_id,
-            'entry_user_id' => auth()->user()->id,
         ]);
 
         return redirect()->route('roles.index')
@@ -77,37 +52,14 @@ class UserRoleController extends Controller
     public function show(UserRole $role)
     {
         return Inertia::render('roles/show', [
-            'role' => $role
+            'role' => $role,
         ]);
     }
 
     // Show edit form
     public function edit(int $roleId)
     {
-        $routes = collect(Route::getRoutes())
-            ->map(function ($r) {
-                return [
-                    'name' => $r->getName(),
-                    'controller' => $r->getAction('controller'),
-                ];
-            })
-            ->filter(fn ($r) => ! empty($r['name']))
-            ->filter(function ($r) {
-                $controller = (string) ($r['controller'] ?? '');
-                $isAppController = Str::startsWith($controller, 'App\\');
-                $isAuth = Str::contains($controller, ['\\Auth\\', 'Fortify']);
-
-                $name = $r['name'];
-                $isAuthName = Str::is([
-                    'login', 'logout', 'register',
-                    'password.*', 'verification.*', 'two-factor.*', 'user.*',
-                    'sanctum.*',
-                ], $name);
-
-                return $isAppController && ! $isAuth && ! $isAuthName;
-            })
-            ->pluck('name')
-            ->values();
+        $routes = Permission::all()->pluck('name');
 
         return Inertia::render('roles/upsert', [
             'role' => UserRole::with('company')->find($roleId),
@@ -126,7 +78,7 @@ class UserRoleController extends Controller
 
         $role->update([
             'role_name' => $validated['role_name'],
-            'permissions' => !empty($validated['permissions']) ? json_encode($validated['permissions']) : null,
+            'permissions' => ! empty($validated['permissions']) ? json_encode($validated['permissions']) : null,
             'company_id' => $validated['company_id'] ?? $role->company_id,
         ]);
 
